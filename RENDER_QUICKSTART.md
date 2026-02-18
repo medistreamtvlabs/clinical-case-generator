@@ -27,7 +27,7 @@
    - Environment: Node
    - Region: Oregon (or closest to you)
    - Build Command:
-     npm install && npx prisma generate && npm run build
+     npm ci --legacy-peer-deps && npx prisma generate && npm run build
    - Start Command:
      npm start
    - Plan: Standard
@@ -98,7 +98,7 @@ Visit: **https://clinical-case-generator.onrender.com**
 **Build fails?**
 - Check logs: Render → Logs
 - Verify environment variables
-- Run locally: `npm install && npm run build`
+- Run locally: `npm ci --legacy-peer-deps && npm run build`
 
 **App crashes?**
 - Check DATABASE_URL is correct
