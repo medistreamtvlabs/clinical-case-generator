@@ -1,11 +1,13 @@
 /**
  * Batch Operations Page
  * Multi-case operations and bulk actions
+ * Optimized with lazy loading and code splitting
  */
 
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,8 +15,17 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { AlertBox } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
-import { BatchExportDialog } from '@/components/export/BatchExportDialog'
-import { ValidationBadge } from '@/components/validation/ValidationBadge'
+
+// Lazy load heavy components
+const BatchExportDialog = dynamic(
+  () => import('@/components/export/BatchExportDialog').then(mod => ({ default: mod.BatchExportDialog })),
+  { loading: () => null }
+)
+
+const ValidationBadge = dynamic(
+  () => import('@/components/validation/ValidationBadge').then(mod => ({ default: mod.ValidationBadge })),
+  { loading: () => <div className="h-10 w-16 bg-gray-200 rounded animate-pulse" /> }
+)
 import type { BatchExportRequest } from '@/lib/validators/validation-validators'
 
 interface CaseForBatch {
