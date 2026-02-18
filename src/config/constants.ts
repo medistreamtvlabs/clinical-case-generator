@@ -27,7 +27,7 @@ export const CASE_STATUSES = ['DRAFT', 'IN_REVIEW', 'APPROVED', 'PUBLISHED', 'AR
 export const DEFAULT_LANGUAGE = 'es'
 
 // Document Types
-export const DOCUMENT_TYPES = [
+export const DOCUMENT_TYPES_ARRAY = [
   'FICHA_TECNICA',
   'ESTUDIO_CLINICO',
   'GUIA_CLINICA',
@@ -36,13 +36,22 @@ export const DOCUMENT_TYPES = [
   'COMPETENCIA',
 ] as const
 
-export const DOCUMENT_TYPE_LABELS: Record<string, string> = {
+export const DOCUMENT_TYPES: Record<string, string> = {
   FICHA_TECNICA: 'Ficha Técnica',
   ESTUDIO_CLINICO: 'Estudio Clínico',
   GUIA_CLINICA: 'Guía Clínica',
   CASO_REFERENCIA: 'Caso de Referencia',
   CONTEXTO_CLINICO: 'Contexto Clínico',
   COMPETENCIA: 'Competencia',
+}
+
+// Parsing Status Labels
+export const PARSING_STATUS_LABELS: Record<string, string> = {
+  PENDING: 'Pendiente',
+  PROCESSING: 'Procesando',
+  COMPLETED: 'Completado',
+  FAILED: 'Error',
+  NEEDS_REVIEW: 'Requiere revisión',
 }
 
 // Pagination
