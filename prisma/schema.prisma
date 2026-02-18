@@ -1,0 +1,200 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// PROJECTS
+// ============================================================================
+
+model Project {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  productName     String
+  activeIngredient String?
+  therapeuticAreas String[]
+  status          ProjectStatus @default(SETUP)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  documents       Document[]
+  cases           ClinicalCase[]
+  configuration   ProjectConfiguration?
+
+  @@index([status])
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  SETUP
+  ACTIVE
+  ARCHIVED
+}
+
+// ============================================================================
+// DOCUMENTS
+// ============================================================================
+
+model Document {
+  id          String   @id @default(cuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  type        DocumentType
+  title       String
+  fileName    String
+  filePath    String
+  fileSize    Int
+  mimeType    String
+
+  version     String?
+  uploadedAt  DateTime @default(now())
+
+  // Parsing
+  parsed      Boolean @default(false)
+  parsedData  Json?
+  parsingStatus ParsingStatus @default(PENDING)
+  parsingError String?
+
+  // Metadata
+  metadata    Json?
+
+  @@index([projectId, type])
+  @@map("documents")
+}
+
+enum DocumentType {
+  FICHA_TECNICA
+  ESTUDIO_CLINICO
+  GUIA_CLINICA
+  CASO_REFERENCIA
+  CONTEXTO_CLINICO
+  COMPETENCIA
+}
+
+enum ParsingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  NEEDS_REVIEW
+}
+
+// ============================================================================
+// PROJECT CONFIGURATION
+// ============================================================================
+
+model ProjectConfiguration {
+  id          String   @id @default(cuid())
+  projectId   String   @unique
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Case generation config
+  mainIndications String[]
+  targetAudiences String[]
+  availableLanguages String[] @default(["es"])
+
+  // Prompts and templates
+  systemPrompt String?
+  caseTemplates Json?
+
+  // Restrictions
+  allowOffLabel Boolean @default(false)
+  requireMedicalReview Boolean @default(true)
+
+  // AI Configuration
+  aiModel     String @default("claude-sonnet-4-5-20250929")
+  temperature Float @default(0.7)
+  maxTokens   Int @default(4000)
+
+  updatedAt   DateTime @updatedAt
+
+  @@map("project_configurations")
+}
+
+// ============================================================================
+// CLINICAL CASES
+// ============================================================================
+
+model ClinicalCase {
+  id          String   @id @default(cuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Metadata
+  title       String
+  indication  String
+  complexity  CaseComplexity
+  educationalObjective String
+  targetAudience String
+  language    String @default("es")
+
+  // Content
+  content     Json
+
+  // Workflow
+  status      CaseStatus @default(DRAFT)
+
+  // Validation
+  validated   Boolean @default(false)
+  validationResults Json?
+
+  // Metrics
+  views       Int @default(0)
+  downloads   Int @default(0)
+  rating      Float?
+  ratingCount Int @default(0)
+
+  // Audit Trail
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String?
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  publishedAt DateTime?
+
+  comments    CaseComment[]
+
+  @@index([projectId, status])
+  @@index([indication])
+  @@map("clinical_cases")
+}
+
+enum CaseComplexity {
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CaseStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+  ARCHIVED
+}
+
+// ============================================================================
+// CASE COMMENTS
+// ============================================================================
+
+model CaseComment {
+  id        String   @id @default(cuid())
+  caseId    String
+  case      ClinicalCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  content   String
+  author    String
+  createdAt DateTime @default(now())
+
+  @@index([caseId])
+  @@map("case_comments")
+}
