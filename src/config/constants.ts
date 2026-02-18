@@ -126,3 +126,78 @@ export const EDUCATIONAL_OBJECTIVES = [
   'Reconocimiento de fallo de tratamiento',
   'Ajuste de dosis',
 ]
+
+// Case Status Labels
+export const CASE_STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'Borrador',
+  IN_REVIEW: 'En Revisión',
+  APPROVED: 'Aprobado',
+  PUBLISHED: 'Publicado',
+  ARCHIVED: 'Archivado',
+}
+
+// Case Complexity Labels and Descriptions
+export const CASE_COMPLEXITY_LABELS: Record<string, string> = {
+  BASIC: 'Básico',
+  INTERMEDIATE: 'Intermedio',
+  ADVANCED: 'Avanzado',
+}
+
+export const CASE_COMPLEXITY_DESCRIPTIONS: Record<string, string> = {
+  BASIC: 'Presentación clásica con diagnóstico directo. Ideal para estudiantes novatos.',
+  INTERMEDIATE: 'Presentación parcialmente atípica con algunos distractores. Requiere síntesis de hallazgos.',
+  ADVANCED: 'Presentación atípica con múltiples distractores. Requiere pensamiento crítico avanzado.',
+}
+
+// Medical Conditions/Indications (Common)
+export const MEDICAL_CONDITIONS = [
+  'Diabetes Mellitus Tipo 2',
+  'Hipertensión Arterial',
+  'Insuficiencia Cardíaca',
+  'Enfermedad Pulmonar Obstructiva Crónica',
+  'Asma',
+  'Enfermedad Renal Crónica',
+  'Artritis Reumatoide',
+  'Lupus Eritematoso Sistémico',
+  'Hepatitis C',
+  'VIH/SIDA',
+  'Cáncer de Pulmón',
+  'Cáncer de Mama',
+  'Depresión',
+  'Trastorno de Ansiedad',
+  'Gastritis',
+  'Úlcera Péptica',
+  'Tromboembolismo Venoso',
+  'Accidente Cerebrovascular',
+  'Infarto Agudo de Miocardio',
+  'Arritmias Cardíacas',
+  'Tiroiditis',
+  'Hipotiroidismo',
+  'Hipertiroidismo',
+  'Pancreatitis Aguda',
+  'Insuficiencia Hepática',
+]
+
+// Target Audience for Cases (for case generation)
+export const CASE_TARGET_AUDIENCES: Record<string, string> = {
+  DOCTORS: 'Médicos Generales',
+  RESIDENTS: 'Residentes',
+  MEDICAL_STUDENTS: 'Estudiantes de Medicina',
+  NURSES: 'Personal de Enfermería',
+  PHARMACISTS: 'Farmacéuticos Clínicos',
+  PRIMARY_CARE: 'Medicina de Atención Primaria',
+  SPECIALISTS: 'Médicos Especialistas',
+  ALL: 'Todos los profesionales de salud',
+}
+
+// Case Generation Configuration
+export const CASE_GENERATION_CONFIG = {
+  MIN_INDICATION_LENGTH: 3,
+  MAX_INDICATION_LENGTH: 200,
+  MIN_OBJECTIVE_LENGTH: 10,
+  MAX_OBJECTIVE_LENGTH: 500,
+  MIN_REQUIREMENTS_LENGTH: 0,
+  MAX_REQUIREMENTS_LENGTH: 1000,
+  MAX_TOKENS_GENERATION: 4096,
+  GENERATION_TIMEOUT: 180000, // 3 minutes
+}
