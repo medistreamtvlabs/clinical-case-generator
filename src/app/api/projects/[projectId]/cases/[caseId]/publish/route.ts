@@ -1,17 +1,26 @@
 /**
  * Case publish route
+ * Transitions case from APPROVED to PUBLISHED status
  */
 
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { CaseStatus } from '@prisma/client'
 import { successResponse, errorResponse } from '@/lib/utils/api-helpers'
+import { isReadyForPublication } from '@/lib/config/approval'
+
+interface PublishRequest {
+  userId?: string // User ID who is publishing
+}
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { projectId: string; caseId: string } }
 ) {
   try {
+    const body = (await request.json()) as PublishRequest
+    const userId = body.userId || 'system'
+
     const clinicalCase = await db.clinicalCase.findFirst({
       where: { id: params.caseId, projectId: params.projectId },
     })
@@ -27,11 +36,30 @@ export async function POST(
       )
     }
 
+    // Verify publication readiness
+    if (!isReadyForPublication(clinicalCase.status, clinicalCase.validationScore)) {
+      return errorResponse(
+        'El caso no cumple los requisitos mínimos para publicación',
+        400
+      )
+    }
+
     const updated = await db.clinicalCase.update({
       where: { id: params.caseId },
       data: {
         status: CaseStatus.PUBLISHED,
         publishedAt: new Date(),
+        publishedBy: userId,
+      },
+    })
+
+    // Create publication comment
+    await db.caseComment.create({
+      data: {
+        caseId: params.caseId,
+        author: userId,
+        content: '[PUBLISHED] Caso publicado y disponible para estudiantes',
+        isReview: true,
       },
     })
 
