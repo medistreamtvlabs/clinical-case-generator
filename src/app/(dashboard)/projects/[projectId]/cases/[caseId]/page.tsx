@@ -113,7 +113,7 @@ export default function CaseDetailPage() {
   if (error || !caseData) {
     return (
       <AlertBox
-        variant="error"
+        variant="destructive"
         title="Error"
         description={error || 'Caso no encontrado'}
       />
@@ -134,7 +134,7 @@ export default function CaseDetailPage() {
 
       {error && (
         <AlertBox
-          variant="error"
+          variant="destructive"
           title="Error"
           description={error}
           onClose={() => setError(null)}
