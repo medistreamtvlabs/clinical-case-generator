@@ -13,7 +13,6 @@ import { Badge } from '@/components/ui/badge'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { AlertBox } from '@/components/ui/alert'
 import { CaseDetailViewer } from '@/components/cases/CaseDetailViewer'
-import { rateCaseSchema } from '@/lib/validators/case-validators'
 import { getCaseStatusLabel, getCaseStatusColor, getNextSuggestedStatus, canTransitionStatus, getStatusTransitionLabel } from '@/lib/utils/case-utils'
 import type { ClinicalCase } from '@/types/case'
 
