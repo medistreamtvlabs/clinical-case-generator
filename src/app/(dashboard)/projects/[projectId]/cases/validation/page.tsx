@@ -3,25 +3,19 @@
  * Comprehensive validation overview and management
  * Optimized with lazy loading and code splitting
  */
-
 'use client'
-
 import React, { useEffect, useState, Suspense } from 'react'
 import dynamic from 'next/dynamic'
-import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { AlertBox } from '@/components/ui/alert'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
-
 // Lazy load ValidationBadge component
 const ValidationBadge = dynamic(
   () => import('@/components/validation/ValidationBadge').then(mod => ({ default: mod.ValidationBadge })),
   { loading: () => <div className="h-10 w-16 bg-gray-200 rounded animate-pulse" /> }
 )
-
 interface ValidationSummary {
   totalCases: number
   validCases: number
@@ -29,7 +23,6 @@ interface ValidationSummary {
   notValidatedCases: number
   averageScore: number
 }
-
 interface CaseValidation {
   id: string
   title: string
@@ -40,11 +33,9 @@ interface CaseValidation {
   createdAt: string
   updatedAt: string
 }
-
 export default function ValidationDashboardPage() {
   const params = useParams()
   const projectId = params.projectId as string
-
   const [summary, setSummary] = useState<ValidationSummary | null>(null)
   const [cases, setCases] = useState<CaseValidation[]>([])
   const [loading, setLoading] = useState(true)
@@ -58,9 +49,7 @@ export default function ValidationDashboardPage() {
   const [sort, setSort] = useState('newest')
   const [validatingAll, setValidatingAll] = useState(false)
   const [overrideValidation, setOverrideValidation] = useState(false)
-
   const limit = 10
-
   // Fetch validation summary
   const fetchSummary = async () => {
     try {
@@ -75,13 +64,11 @@ export default function ValidationDashboardPage() {
       console.error('Error fetching validation summary:', err)
     }
   }
-
   // Fetch cases with validation data
   const fetchCases = async () => {
     try {
       setLoading(true)
       setError(null)
-
       const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
@@ -90,16 +77,13 @@ export default function ValidationDashboardPage() {
         ...(scoreRange !== 'all' && { scoreRange }),
         ...(search && { search }),
       })
-
       const response = await fetch(
         `/api/projects/${projectId}/cases?${params}&includeValidation=true`
       )
       const data = await response.json()
-
       if (!response.ok) {
         throw new Error(data.message || 'Error al cargar casos')
       }
-
       setCases(data.data || [])
       setTotal(data.pagination.total)
       setTotalPages(data.pagination.totalPages)
@@ -111,13 +95,11 @@ export default function ValidationDashboardPage() {
       setLoading(false)
     }
   }
-
   // Initial load and refetch
   useEffect(() => {
     fetchSummary()
     fetchCases()
   }, [projectId, page, validationStatus, scoreRange, search, sort])
-
   // Handle validate all
   const handleValidateAll = async () => {
     try {
@@ -133,7 +115,6 @@ export default function ValidationDashboardPage() {
           }),
         }
       )
-
       const data = await response.json()
       if (response.ok) {
         // Refresh both summary and cases
@@ -150,7 +131,6 @@ export default function ValidationDashboardPage() {
       setValidatingAll(false)
     }
   }
-
   const getValidationStatusBadge = (status: string) => {
     switch (status) {
       case 'valid':
@@ -163,7 +143,6 @@ export default function ValidationDashboardPage() {
         return <Badge>{status}</Badge>
     }
   }
-
   const getScoreRangeLabel = (range: string) => {
     switch (range) {
       case 'excellent':
@@ -178,11 +157,9 @@ export default function ValidationDashboardPage() {
         return 'Todos'
     }
   }
-
   if (loading && !summary) {
     return <LoadingSpinner variant="md" />
   }
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -199,7 +176,6 @@ export default function ValidationDashboardPage() {
           </Link>
         </Button>
       </div>
-
       {/* Stats Cards */}
       {summary && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -214,7 +190,6 @@ export default function ValidationDashboardPage() {
               </div>
             </CardContent>
           </Card>
-
           {/* Valid Cases */}
           <Card>
             <CardContent className="pt-6">
@@ -228,7 +203,6 @@ export default function ValidationDashboardPage() {
               </div>
             </CardContent>
           </Card>
-
           {/* Average Score */}
           <Card>
             <CardContent className="pt-6">
@@ -242,7 +216,6 @@ export default function ValidationDashboardPage() {
           </Card>
         </div>
       )}
-
       {/* Quick Actions Card */}
       <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
         <CardHeader>
@@ -280,7 +253,6 @@ export default function ValidationDashboardPage() {
           </div>
         </CardContent>
       </Card>
-
       {/* Error Alert */}
       {error && (
         <AlertBox
@@ -290,7 +262,6 @@ export default function ValidationDashboardPage() {
           onClose={() => setError(null)}
         />
       )}
-
       {/* Filters */}
       <div className="flex flex-col gap-4 p-4 bg-gray-50 rounded-lg">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -310,7 +281,6 @@ export default function ValidationDashboardPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
-
           {/* Validation Status Filter */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -330,7 +300,6 @@ export default function ValidationDashboardPage() {
               <option value="not-validated">Sin validar</option>
             </select>
           </div>
-
           {/* Score Range Filter */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -351,7 +320,6 @@ export default function ValidationDashboardPage() {
               <option value="needs-work">Necesita mejoras (&lt;60)</option>
             </select>
           </div>
-
           {/* Sort */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -374,7 +342,6 @@ export default function ValidationDashboardPage() {
           </div>
         </div>
       </div>
-
       {/* Cases List */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Casos Disponibles</h2>
@@ -411,7 +378,6 @@ export default function ValidationDashboardPage() {
                           {new Date(caseItem.updatedAt).toLocaleDateString('es-ES')}
                         </p>
                       </div>
-
                       {/* Validation Badge */}
                       <div className="flex flex-col items-end gap-2">
                         {caseItem.score !== undefined ? (
@@ -427,7 +393,6 @@ export default function ValidationDashboardPage() {
                           </div>
                         )}
                       </div>
-
                       {/* Action Button */}
                       <div>
                         <Button
@@ -447,7 +412,6 @@ export default function ValidationDashboardPage() {
                 </Card>
               ))}
             </div>
-
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-between mt-6 p-4 bg-gray-50 rounded-lg">

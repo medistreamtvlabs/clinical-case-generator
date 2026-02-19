@@ -1,13 +1,9 @@
 /**
  * Parse document route: POST to trigger parsing
  */
-
-import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { parseDocumentWithClaude } from '@/lib/ai/document-parser'
 import { successResponse, errorResponse } from '@/lib/utils/api-helpers'
 import { ParsingStatus } from '@prisma/client'
-
 /**
  * POST /api/projects/[projectId]/documents/[documentId]/parse
  * Trigger document parsing with Claude AI
@@ -25,11 +21,9 @@ export async function POST(
         projectId: params.projectId,
       },
     })
-
     if (!document) {
       return errorResponse('Documento no encontrado', 404)
     }
-
     // Update status to PROCESSING
     await db.document.update({
       where: { id: params.documentId },
@@ -38,11 +32,9 @@ export async function POST(
         errorMessage: null,
       },
     })
-
     // TODO: In production, queue this as a background job
     // For now, parse synchronously (not recommended for large files)
     // This would timeout if document is large or parsing takes too long
-
     // For demo purposes, simulate parsing
     // In production: integrate with pdf-parse, mammoth, and actually parse the file
     const mockParsedData = {
@@ -51,7 +43,6 @@ export async function POST(
       estimatedTime: '2-5 minutos',
       nextSteps: 'El sistema procesará el documento y extraerá la información automáticamente',
     }
-
     // Update document with queued status
     const updatedDocument = await db.document.update({
       where: { id: params.documentId },
@@ -63,7 +54,6 @@ export async function POST(
         },
       },
     })
-
     return successResponse(
       {
         id: updatedDocument.id,
@@ -76,7 +66,6 @@ export async function POST(
     )
   } catch (error) {
     console.error('Error queuing document for parsing:', error)
-
     // Update document with error
     try {
       await db.document.update({
@@ -89,7 +78,6 @@ export async function POST(
     } catch {
       // Ignore update errors
     }
-
     return errorResponse('Error al procesar documento', 500)
   }
 }

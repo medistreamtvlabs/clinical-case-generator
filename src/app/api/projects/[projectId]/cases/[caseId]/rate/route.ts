@@ -1,12 +1,9 @@
 /**
  * Case rating route
  */
-
-import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { rateCaseSchema } from '@/lib/validators/case-validators'
 import { successResponse, errorResponse, validationErrorResponse } from '@/lib/utils/api-helpers'
-
 export async function POST(
   request: NextRequest,
   { params }: { params: { projectId: string; caseId: string } }
@@ -15,14 +12,11 @@ export async function POST(
     const clinicalCase = await db.clinicalCase.findFirst({
       where: { id: params.caseId, projectId: params.projectId },
     })
-
     if (!clinicalCase) {
       return errorResponse('Caso clínico no encontrado', 404)
     }
-
     const body = await request.json()
     const validation = rateCaseSchema.safeParse(body)
-
     if (!validation.success) {
       return validationErrorResponse(
         validation.error.errors.map((e) => ({
@@ -31,16 +25,13 @@ export async function POST(
         }))
       )
     }
-
     const { rating } = validation.data
-
     // Calculate new average rating
     const currentRating = clinicalCase.rating || 0
     const currentCount = clinicalCase.ratingCount || 0
     const newCount = currentCount + 1
     const newRating =
       (currentRating * currentCount + rating) / newCount
-
     const updated = await db.clinicalCase.update({
       where: { id: params.caseId },
       data: {
@@ -48,7 +39,6 @@ export async function POST(
         ratingCount: newCount,
       },
     })
-
     return successResponse({
       id: updated.id,
       rating: updated.rating,

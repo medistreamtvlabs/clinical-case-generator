@@ -2,19 +2,14 @@
  * Submit case for review API route
  * Transitions case from DRAFT to IN_REVIEW status
  */
-
-import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { CaseStatus } from '@prisma/client'
 import { successResponse, errorResponse } from '@/lib/utils/api-helpers'
-import { submitForReview } from '@/lib/services/approval-workflow'
 import { APPROVAL_WORKFLOW } from '@/lib/config/approval'
-
 interface SubmitReviewRequest {
   userId?: string // User ID who is submitting for review
   comments?: string // Optional comments when submitting
 }
-
 export async function POST(
   request: NextRequest,
   { params }: { params: { projectId: string; caseId: string } }
@@ -22,16 +17,13 @@ export async function POST(
   try {
     const body = (await request.json()) as SubmitReviewRequest
     const userId = body.userId || 'system'
-
     // Fetch the case
     const clinicalCase = await db.clinicalCase.findFirst({
       where: { id: params.caseId, projectId: params.projectId },
     })
-
     if (!clinicalCase) {
       return errorResponse('Caso clínico no encontrado', 404)
     }
-
     // Verify case is in DRAFT status
     if (clinicalCase.status !== CaseStatus.DRAFT) {
       return errorResponse(
@@ -39,7 +31,6 @@ export async function POST(
         400
       )
     }
-
     // Check if validation score meets minimum requirement
     if (clinicalCase.validationScore === null) {
       return errorResponse(
@@ -47,7 +38,6 @@ export async function POST(
         400
       )
     }
-
     if (
       clinicalCase.validationScore <
       APPROVAL_WORKFLOW.requiredValidationScore
@@ -57,7 +47,6 @@ export async function POST(
         400
       )
     }
-
     // Update case status to IN_REVIEW
     const updated = await db.clinicalCase.update({
       where: { id: params.caseId },
@@ -67,7 +56,6 @@ export async function POST(
         submittedForReviewBy: userId,
       },
     })
-
     // Create a comment recording the submission
     if (body.comments) {
       await db.caseComment.create({
@@ -79,7 +67,6 @@ export async function POST(
         },
       })
     }
-
     return successResponse({
       ...updated,
       message: 'Caso enviado a revisión correctamente',
