@@ -107,7 +107,7 @@ export default function CaseDetailPage() {
   const nextStatus = caseData ? getNextSuggestedStatus(caseData.status) : null
 
   if (loading) {
-    return <LoadingSpinner variant="lg" />
+    return <LoadingSpinner size="lg" />
   }
 
   if (error || !caseData) {
