@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { APP_NAME } from '@/config/constants'
-import { Flask, Menu, X } from 'lucide-react'
+import { Beaker, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
 export default function DashboardLayout({
@@ -28,7 +28,7 @@ export default function DashboardLayout({
         <nav className="h-full flex flex-col">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 px-6 py-4 border-b border-gray-200">
-            <Flask className="h-6 w-6 text-primary-600" />
+            <Beaker className="h-6 w-6 text-primary-600" />
             <span className="font-bold text-gray-900">{APP_NAME}</span>
           </Link>
 
