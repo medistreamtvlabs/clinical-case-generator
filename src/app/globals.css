@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 * {
-  @apply border-border;
+  /* @apply border-border; */
 }
 
 body {
-  @apply bg-background text-foreground;
+  @apply bg-white text-gray-900;
   font-feature-settings: "rounding" 1;
 }
 
