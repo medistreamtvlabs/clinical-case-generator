@@ -15,7 +15,7 @@ services:
     plan: standard
     region: oregon
     runtime: node
-    runtimeVersion: 18
+    runtimeVersion: "18.17.1"
 
     buildCommand: npm install --legacy-peer-deps --force && npx prisma generate && npm run build
     startCommand: npm start
