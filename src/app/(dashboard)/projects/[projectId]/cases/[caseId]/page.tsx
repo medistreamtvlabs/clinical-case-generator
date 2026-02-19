@@ -149,7 +149,7 @@ export default function CaseDetailPage() {
           complexity={caseData.complexity}
           status={caseData.status}
           educationalObjective={caseData.educationalObjective}
-          targetAudience={caseData.targetAudience}
+          targetAudience={caseData.targetAudiences}
           views={caseData.views}
           rating={caseData.rating}
           ratingCount={caseData.ratingCount}
