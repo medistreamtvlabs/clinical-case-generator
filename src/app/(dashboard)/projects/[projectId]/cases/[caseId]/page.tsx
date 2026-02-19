@@ -230,11 +230,11 @@ export default function CaseDetailPage() {
           </div>
 
           <div className="border-t pt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button variant="outline" asChild>
-              <Link href={`/projects/${projectId}/cases/${caseId}/edit`}>
+            <Link href={`/projects/${projectId}/cases/${caseId}/edit`}>
+              <Button variant="outline" className="w-full">
                 ✏️ Editar
-              </Link>
-            </Button>
+              </Button>
+            </Link>
             <Button variant="outline">
               🖨️ Imprimir
             </Button>
