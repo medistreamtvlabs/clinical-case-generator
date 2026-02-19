@@ -5,7 +5,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -24,7 +24,6 @@ interface CaseDetail extends Omit<ClinicalCase, 'createdAt' | 'updatedAt' | 'pub
 
 export default function CaseDetailPage() {
   const params = useParams()
-  const router = useRouter()
   const projectId = params.projectId as string
   const caseId = params.caseId as string
 
