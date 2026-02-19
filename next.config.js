@@ -13,14 +13,6 @@ const nextConfig = {
     appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   },
 
-  // Increase payload size limit for API routes
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-    responseLimit: '10mb',
-  },
-
   // Enable experimental features
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client'],
